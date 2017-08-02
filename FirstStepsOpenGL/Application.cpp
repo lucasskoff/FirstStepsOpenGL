@@ -107,23 +107,41 @@ int main()
 	//Vertex Data / Vertext Attributes
 	//---------------------------------------------------------------------------
 	//An array of points for our triangle. Only valid points are between -1 and 1.
-	float vertices[] = {
+	/*float vertices[] = {
 		-0.5f, -0.5f, 0.0f,
 		0.5f, -0.5f, 0.0f,
 		0.0f,  0.5f, 0.0f
+	};*/
+	
+
+	//Vertices for two triangles to form a rectangle using EBO
+	float vertices[] = {
+		0.5f,  0.5f, 0.0f,  // top right
+		0.5f, -0.5f, 0.0f,  // bottom right
+		-0.5f, -0.5f, 0.0f,  // bottom left
+		-0.5f,  0.5f, 0.0f   // top left 
+	};
+
+	unsigned int indices[] = {
+		0, 1, 3,   // first triangle
+		1, 2, 3    // second triangle
 	};
 
 	//Create a vertex buffer and vertext array. Give it a unique id.
-	unsigned int VBO, VAO;
+	unsigned int VBO, VAO, EBO;
 	glGenBuffers(1, &VBO);
 	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &EBO);
 
-	//Have to bind vertex array first.
+	//Bind vertex array first.
 	glBindVertexArray(VAO);
 
-	//Bind our vertext buffer into a GL_ARRAY. Static is fine as our triangle will not be moving.
+	//Bind and set vertex buffers.
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	//Tell OpenGL how to interpret vertex data when rendering.
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -149,7 +167,8 @@ int main()
 		// draw our triangle
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		//glBindVertexArray(0); //No need to unbind each time as we only draw one triangle
 
 		//swap buffers and obtain all IO events
@@ -160,6 +179,9 @@ int main()
 	//Clean Up
 	//---------------------------------------------------------------------------
 	//glfw terminate to clear all allocated glfw resources.
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 	glfwTerminate();
 	return 0;
 }
