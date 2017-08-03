@@ -18,7 +18,7 @@ const char *fragmentShaderSource = "#version 330 core\n"
 	"out vec4 FragColor;\n"
 	"void main()\n"
 	"{\n"
-	"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+	"   FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
 	"}\n\0";
 
 int main()
@@ -106,26 +106,30 @@ int main()
 
 	//Vertex Data / Vertext Attributes
 	//---------------------------------------------------------------------------
-	//An array of points for our triangle. Only valid points are between -1 and 1.
-	/*float vertices[] = {
-		-0.5f, -0.5f, 0.0f,
-		0.5f, -0.5f, 0.0f,
-		0.0f,  0.5f, 0.0f
-	};*/
-	
-
-	//Vertices for two triangles to form a rectangle using EBO
+	//An array of points for our 2 triangles. Only valid points are between -1 and 1.
 	float vertices[] = {
-		0.5f,  0.5f, 0.0f,  // top right
-		0.5f, -0.5f, 0.0f,  // bottom right
-		-0.5f, -0.5f, 0.0f,  // bottom left
-		-0.5f,  0.5f, 0.0f   // top left 
+		-1.0f, -0.5f, 0.0f,
+		0.0f, -0.5f, 0.0f,
+		-0.5f,  0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f,
+		1.0f, -0.5f, 0.0f,
+		0.5f,  0.0f, 0.0f
+	};
+	
+	//EBO CODE
+	//---------------
+	//Vertices for two triangles to form a rectangle using EBO
+	/*float vertices[] = {
+		-0.5f,  0.0f, 0.0f, //Top of left triangle
+		0.5f,  0.0f, 0.0f,  //top of right triangle
+		-1.0f, -0.5f, 0.0f, //Bottom of left triangle
+		1.0f, -0.5f, 0.0f,
 	};
 
 	unsigned int indices[] = {
-		0, 1, 3,   // first triangle
-		1, 2, 3    // second triangle
-	};
+		1, 2, 0,   // first triangle
+		0, 3, 4    // second triangle
+	};*/
 
 	//Create a vertex buffer and vertext array. Give it a unique id.
 	unsigned int VBO, VAO, EBO;
@@ -140,8 +144,10 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	//EBO CODE
+	//---------------
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	//Tell OpenGL how to interpret vertex data when rendering.
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -161,14 +167,17 @@ int main()
 		processInput(window);
 
 		//render
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// draw our triangle
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		//glDrawArrays(GL_TRIANGLES, 0, 6);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		//EBO CODE
+		//---------------
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		//glBindVertexArray(0); //No need to unbind each time as we only draw one triangle
 
 		//swap buffers and obtain all IO events
@@ -181,7 +190,7 @@ int main()
 	//glfw terminate to clear all allocated glfw resources.
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
+	//glDeleteBuffers(1, &EBO);
 	glfwTerminate();
 	return 0;
 }
