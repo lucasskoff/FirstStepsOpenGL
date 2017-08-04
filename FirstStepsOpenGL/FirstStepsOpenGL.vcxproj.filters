@@ -25,4 +25,17 @@
   <ItemGroup>
     <Text Include="Tutorials Followed.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="shaderProgram.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="vertexShader.vs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="fragmentShader.fs">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
