@@ -1,6 +1,6 @@
 # FirstStepsOpenGL
 
-Following tutorials to learn and understand graphics processing with the dream to someday work for WETA studios.
+Following tutorials to learn and understand graphics processing.
 
 The goal is to make one unique code contribution a day for 3 years.
 
