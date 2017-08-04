@@ -7,20 +7,23 @@ void processInput(GLFWwindow *window);
 
 //Simple vertex shader program
 const char *vertexShaderSource = "#version 330 core\n"
-	"layout (location = 0) in vec3 aPos;\n"
-	"void main()\n"
-	"{\n"
-	"   gl_Position = vec4(aPos, 1.0);\n"
-	"}\0";
+"layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec3 aColor;\n"
+"out vec3 ourColor;\n"
+"void main()\n"
+"{\n"
+"   gl_Position = vec4(aPos, 1.0);\n"
+"	ourColor = aColor;\n"
+"}\0";
 
 //Simple fragment shader program
 const char *fragmentShaderSource = "#version 330 core\n"
-	"out vec4 FragColor;\n"
-	"uniform vec4 ourColor;\n"
-	"void main()\n"
-	"{\n"
-	"   FragColor = ourColor;\n"
-	"}\n\0";
+"out vec4 FragColor;\n"
+"in vec3 ourColor;\n"
+"void main()\n"
+"{\n"
+"   FragColor = vec4(ourColor, 1.0f);\n"
+"}\n\0";
 
 int main()
 {
@@ -72,7 +75,7 @@ int main()
 	}
 
 	//Create a fragment shader object and give it a unique id.
-	 unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
 	//Compile our shader program and bind it an object with our id.
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
@@ -109,27 +112,25 @@ int main()
 	//---------------------------------------------------------------------------
 	//An array of points for our 2 triangles. Only valid points are between -1 and 1.
 	float vertices[] = {
-		-1.0f, -0.5f, 0.0f,
-		0.0f, -0.5f, 0.0f,
-		-0.5f,  0.0f, 0.0f,
-		0.0f, -0.5f, 0.0f,
-		1.0f, -0.5f, 0.0f,
-		0.5f,  0.0f, 0.0f
+		// positions         // colors
+		0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
+		-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
+		0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
 	};
-	
+
 	//EBO CODE
 	//---------------
 	//Vertices for two triangles to form a rectangle using EBO
 	/*float vertices[] = {
-		-0.5f,  0.0f, 0.0f, //Top of left triangle
-		0.5f,  0.0f, 0.0f,  //top of right triangle
-		-1.0f, -0.5f, 0.0f, //Bottom of left triangle
-		1.0f, -0.5f, 0.0f,
+	-0.5f,  0.0f, 0.0f, //Top of left triangle
+	0.5f,  0.0f, 0.0f,  //top of right triangle
+	-1.0f, -0.5f, 0.0f, //Bottom of left triangle
+	1.0f, -0.5f, 0.0f,
 	};
 
 	unsigned int indices[] = {
-		1, 2, 0,   // first triangle
-		0, 3, 4    // second triangle
+	1, 2, 0,   // first triangle
+	0, 3, 4    // second triangle
 	};*/
 
 	//Create a vertex buffer and vertext array. Give it a unique id.
@@ -151,8 +152,13 @@ int main()
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	//Tell OpenGL how to interpret vertex data when rendering.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	//position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	//color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
