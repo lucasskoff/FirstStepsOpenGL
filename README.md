@@ -9,4 +9,5 @@ Any commits marked with "OWN CODE" are my attempts to go off the tutorial and tr
 While following the tutorial I will attempt to make my own comments to understand what each line is doing.
 
 Video followed to set up OpenGL: https://www.youtube.com/watch?v=tmTLcyAwBJo
+
 Tutorial followed: https://learnopengl.com/#!Introduction
