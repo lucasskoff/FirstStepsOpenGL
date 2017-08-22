@@ -88,23 +88,22 @@ int main()
 	//Texture
 	//---------------------------------------------------------------------------
 	//Create texture object and assign it an id.
-	unsigned int texture;
-	glGenTextures(1, &texture);
-
-	//Bind the texture so any future texture calls are on the same object.
-	glBindTexture(GL_TEXTURE_2D, texture);
+	unsigned int texture1, texture2;
+	glGenTextures(1, &texture1);
+	glBindTexture(GL_TEXTURE_2D, texture1);
 
 	/* Set the textures to the coordinate axis (s, t (r if it is 3d))
 	 * First argument represents 2D textures,
 	 * The second is which option we want to set and for which axis,
 	 * The third is the texture wrapping mode. */
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	//Uses sbi_image.h to load a texture.
 	int width, height, nrChannels;
+	stbi_set_flip_vertically_on_load(true);
 	unsigned char *data = stbi_load("resources/texture/container.jpg", &width, &height, &nrChannels, 0);
 
 	if (data)
@@ -117,11 +116,41 @@ int main()
 	}
 	else
 	{
-		std::cout << "Failed to load texture" << std::endl;
+		std::cout << "Failed to load crate texture" << std::endl;
 		exit(1);
 	}
 	//Free the image after the texture has been generated.
 	stbi_image_free(data);
+
+	//Texture 2
+	glGenTextures(1, &texture2);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	data = stbi_load("resources/texture/awesomeface.jpg", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		//Generate a texture based on our stbi_load call.
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+		//By generating a mipmap our texture can scale with ease.
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load face texture" << std::endl;
+		exit(1);
+	}
+	stbi_image_free(data);
+
+	//openGL needs to know which sampler each texture unit belongs to
+	ourShader.use();
+	//setting it manually:
+	glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
+	//using texture class:
+	ourShader.setInt("texture2", 1);
 
 	//Uncomment to display vertices in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -137,8 +166,11 @@ int main()
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		//draw triangle
-		glBindTexture(GL_TEXTURE_2D, texture);
+		//bing textures to corresponding texture units
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
 
 		//Activate shader
 		ourShader.use();
