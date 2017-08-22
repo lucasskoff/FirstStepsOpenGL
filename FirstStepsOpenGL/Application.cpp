@@ -1,8 +1,12 @@
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+#include "shaderProgram.h"
 
 #include <iostream>
-#include "shaderProgram.h"
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -41,41 +45,83 @@ int main()
 	//---------------------------------------------------------------------------
 	//Use our shader program with the filenames of the vertex and fragment shaders.
 	Shader ourShader("vertexShader.vs", "fragmentShader.fs");
-	
 
-	//Vertex Data / Vertext Attributes
+	//Vertex Data / Vertex Attributes
 	//---------------------------------------------------------------------------
 	//An array of points for our 2 triangles. Only valid points are between -1 and 1.
 	float vertices[] = {
-		// positions         // colors
-		0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-		-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-		0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
+		// positions          // colors           // texture coords
+		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
 	};
 
-	//Create a vertex buffer and vertext array. Give it a unique id.
-	unsigned int VBO, VAO;
-	glGenBuffers(1, &VBO);
-	glGenVertexArrays(1, &VAO);
+	unsigned int indices[] = {
+		0, 1, 3, // first triangle
+		1, 2, 3  // second triangle
+	};
 
-	//Bind vertex array first.
+	unsigned int VBO, VAO, EBO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
 	glBindVertexArray(VAO);
 
-	//Bind and set vertex buffers.
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	//Tell OpenGL how to interpret vertex data when rendering.
-	//position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-
-	//color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	// color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+	// texture coord attribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	//Texture
+	//---------------------------------------------------------------------------
+	//Create texture object and assign it an id.
+	unsigned int texture;
+	glGenTextures(1, &texture);
+
+	//Bind the texture so any future texture calls are on the same object.
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	/* Set the textures to the coordinate axis (s, t (r if it is 3d))
+	 * First argument represents 2D textures,
+	 * The second is which option we want to set and for which axis,
+	 * The third is the texture wrapping mode. */
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//Uses sbi_image.h to load a texture.
+	int width, height, nrChannels;
+	unsigned char *data = stbi_load("resources/texture/container.jpg", &width, &height, &nrChannels, 0);
+
+	if (data)
+	{
+		//Generate a texture based on our stbi_load call.
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+		//By generating a mipmap our texture can scale with ease.
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+		exit(1);
+	}
+	//Free the image after the texture has been generated.
+	stbi_image_free(data);
 
 	//Uncomment to display vertices in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -91,13 +137,15 @@ int main()
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		//draw triangle
+		glBindTexture(GL_TEXTURE_2D, texture);
+
 		//Activate shader
 		ourShader.use();
-		//draw triangle
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		//swap buffers and obtain all IO events
+		//glfw: swap buffers and obtain all IO events
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
