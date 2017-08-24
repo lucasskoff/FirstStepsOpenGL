@@ -29,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Tutorials Followed.txt" />
+    <Text Include="notepad.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shaderProgram.h">
