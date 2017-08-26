@@ -64,7 +64,6 @@ int main()
 	//Use our shader program with the filenames of the vertex and fragment shaders.
 	//Shader ourShader("vertexShader.vs", "fragmentShader.fs");
 
-
 	//First Shader Program
 	int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	int fragmentShaderOrange = glCreateShader(GL_FRAGMENT_SHADER);
@@ -100,20 +99,20 @@ int main()
 
 	//Vertex Data / Vertex Attributes
 	//---------------------------------------------------------------------------
-	float vertices[] = {
+	float verticesTopLeftSquare[] = {
 		// first square
-		 0.0f,  1.0f, 0.0f,  // top right
-		 -1.0f,  1.0f, 0.0f,  // top left
-		 -1.0f,  0.0f, 0.0f,   // bottom left
-		 0.0f,  0.0f, 0.0f  // bottom right
+		 -0.1f,  0.9f, 0.0f,  // top right
+		 -0.9f,  0.9f, 0.0f,  // top left
+		 -0.9f,  0.1f, 0.0f,   // bottom left
+		 -0.1f,  0.1f, 0.0f  // bottom right
 	};
 
 	// second square
-	float vertices2[] = {
-		1.0f,  1.0f, 0.0f,  // top right
-		0.0f,  1.0f, 0.0f,  // top left
-		0.0f,  0.0f, 0.0f,   // bottom left
-		1.0f,  0.0f, 0.0f  // bottom right
+	float verticesTopRightSquare[] = {
+		0.9f,  0.9f, 0.0f,  // top right
+		0.1f,  0.9f, 0.0f,  // top left
+		0.1f,  0.1f, 0.0f,  // bottom left
+		0.9f,  0.1f, 0.0f   // bottom right
 		
 	};
 
@@ -130,7 +129,7 @@ int main()
 	//Set up First Square
 	glBindVertexArray(VAOs[0]);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesTopLeftSquare), verticesTopLeftSquare, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
@@ -139,7 +138,7 @@ int main()
 	//Set up second square
 	glBindVertexArray(VAOs[1]);
 	glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesTopRightSquare), verticesTopRightSquare, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[1]);
