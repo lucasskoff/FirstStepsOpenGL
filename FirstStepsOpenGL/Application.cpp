@@ -111,17 +111,17 @@ int main()
 		0.1f,  0.1f, 0.0f,  // bottom left
 		0.9f,  0.1f, 0.0f   // bottom right
 	 },
-		//Bottom Left Square
-	 { -0.1f, -0.1f, 0.0f,  // top right
-		-0.9f, -0.1f, 0.0f,  // top left
-		-0.9f, -0.9f, 0.0f,  // bottom left
-		-0.1f, -0.9f, 0.0f   // bottom right
-	 },
 		//Bottom Right Square
 	 { 0.9f, -0.1f, 0.0f,  // top right
 		0.1f, -0.1f, 0.0f,  // top left
 		0.1f, -0.9f, 0.0f,  // bottom left
 		0.9f, -0.9f, 0.0f   // bottom right
+	 },
+		//Bottom Left Square
+	 { -0.1f, -0.1f, 0.0f,  // top right
+		-0.9f, -0.1f, 0.0f,  // top left
+		-0.9f, -0.9f, 0.0f,  // bottom left
+		-0.1f, -0.9f, 0.0f   // bottom right
 	 }
 	};
 
@@ -159,15 +159,19 @@ int main()
 		//render
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		
-		OorY == 0 ? glUseProgram(shaderProgramOrange) : glUseProgram(shaderProgramYellow);
-		OorY = OorY == 0 ? 1 : 0;
+
 		for (i = 0; i < 4; i++) {
+			if (OorY == i) {
+				glUseProgram(shaderProgramYellow);
+			}
+			else {
+				glUseProgram(shaderProgramOrange);
+			}
 			glBindVertexArray(VAOs[i]);
 			//glDrawArrays(GL_TRIANGLES, 0, 6);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			
 		}
+		OorY = (OorY + 1) % 4;
 
 		//glfw: swap buffers and obtain all IO events
 		glfwSwapBuffers(window);
