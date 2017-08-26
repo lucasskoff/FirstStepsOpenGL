@@ -73,13 +73,14 @@ int main()
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
 
+	//Attach shader to the corresponding program.
 	glShaderSource(fragmentShaderOrange, 1, &fragmentShaderSource, NULL);
 	glCompileShader(fragmentShaderOrange);
 
 	glShaderSource(fragmentShaderYellow, 1, &fragmentShaderRightSource, NULL);
 	glCompileShader(fragmentShaderYellow);
-	// link shaders
 	
+	//Attach fragment and vertex shaders to the shader program.
 	glAttachShader(shaderProgramOrange, vertexShader);
 	glAttachShader(shaderProgramOrange, fragmentShaderOrange);
 	glLinkProgram(shaderProgramOrange);
@@ -87,33 +88,40 @@ int main()
 	glAttachShader(shaderProgramYellow, vertexShader);
 	glAttachShader(shaderProgramYellow, fragmentShaderYellow);
 	glLinkProgram(shaderProgramYellow);
-	
+
+	//Remove vertex and fragment shaders as they are no longer necessary.
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShaderOrange);
 	glDeleteShader(fragmentShaderYellow);
 
-	// link shaders
-	
-	
-
 
 	//Vertex Data / Vertex Attributes
 	//---------------------------------------------------------------------------
-	float verticesTopLeftSquare[] = {
-		// first square
-		 -0.1f,  0.9f, 0.0f,  // top right
-		 -0.9f,  0.9f, 0.0f,  // top left
-		 -0.9f,  0.1f, 0.0f,   // bottom left
-		 -0.1f,  0.1f, 0.0f  // bottom right
-	};
-
-	// second square
-	float verticesTopRightSquare[] = {
-		0.9f,  0.9f, 0.0f,  // top right
+	float vertices[4][12] = 
+	{ //Top Left Square
+	 { -0.1f,  0.9f, 0.0f,  // top right
+	 -0.9f,  0.9f, 0.0f,  // top left
+	 -0.9f,  0.1f, 0.0f,   // bottom left
+	 -0.1f,  0.1f, 0.0f  // bottom right
+	 },
+		//Top Right Square
+	 { 0.9f,  0.9f, 0.0f,  // top right
 		0.1f,  0.9f, 0.0f,  // top left
 		0.1f,  0.1f, 0.0f,  // bottom left
 		0.9f,  0.1f, 0.0f   // bottom right
-		
+	 },
+		//Bottom Left Square
+	 { -0.1f, -0.1f, 0.0f,  // top right
+		-0.9f, -0.1f, 0.0f,  // top left
+		-0.9f, -0.9f, 0.0f,  // bottom left
+		-0.1f, -0.9f, 0.0f   // bottom right
+	 },
+		//Bottom Right Square
+	 { 0.9f, -0.1f, 0.0f,  // top right
+		0.1f, -0.1f, 0.0f,  // top left
+		0.1f, -0.9f, 0.0f,  // bottom left
+		0.9f, -0.9f, 0.0f   // bottom right
+	 }
 	};
 
 	unsigned int indices[] = {  // note that we start from 0!
@@ -121,39 +129,22 @@ int main()
     1, 2, 3    // second triangle
 	};  
 
-	unsigned int VBOs[2], VAOs[2], EBOs[2];
-	glGenVertexArrays(2, VAOs);
-	glGenBuffers(2, VBOs);
-	glGenBuffers(2, EBOs);
+	unsigned int VBOs[4], VAOs[4], EBOs[4];
+	glGenVertexArrays(4, VAOs);
+	glGenBuffers(4, VBOs);
+	glGenBuffers(4, EBOs);
 
-	//Set up First Square
-	glBindVertexArray(VAOs[0]);
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesTopLeftSquare), verticesTopLeftSquare, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[0]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	
-	//Set up second square
-	glBindVertexArray(VAOs[1]);
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(verticesTopRightSquare), verticesTopRightSquare, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[1]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	int i = 0;
+	for (int i = 0; i < 4; i++) {
+		glBindVertexArray(VAOs[i]);
+		glBindBuffer(GL_ARRAY_BUFFER, VBOs[i]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[i]), vertices[i], GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[i]);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	}
 
-	//Set up second Triangle
-	/*glBindVertexArray(VAOs[1]);
-	glBindBuffer(GL_ARRAY_BUFFER, VBOs[1]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-	glEnableVertexAttribArray(0);*/
-
-	/*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	*/
 	//Uncomment to display vertices in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -168,24 +159,12 @@ int main()
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		//bing textures to corresponding texture units
-		/*
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture1);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture2);
-		*/
-
-		//Activate shader
-		//ourShader.use();
 		glUseProgram(shaderProgramOrange);
-		glBindVertexArray(VAOs[0]);
-		//glDrawArrays(GL_TRIANGLES, 0, 6);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glUseProgram(shaderProgramYellow);
-		glBindVertexArray(VAOs[1]);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		// glDrawArrays(GL_TRIANGLES, 0, 6);
+		for (i = 0; i < 4; i++) {
+			glBindVertexArray(VAOs[i]);
+			//glDrawArrays(GL_TRIANGLES, 0, 6);
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		}
 
 		//glfw: swap buffers and obtain all IO events
 		glfwSwapBuffers(window);
