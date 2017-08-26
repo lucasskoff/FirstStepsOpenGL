@@ -6,6 +6,7 @@
 #include "shaderProgram.h"
 
 #include <iostream>
+#include <windows.h>
 
 const char *vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
@@ -105,7 +106,7 @@ int main()
 	 -0.1f,  0.1f, 0.0f  // bottom right
 	 },
 		//Top Right Square
-	 { 0.9f,  0.9f, 0.0f,  // top right
+	 {  0.9f,  0.9f, 0.0f,  // top right
 		0.1f,  0.9f, 0.0f,  // top left
 		0.1f,  0.1f, 0.0f,  // bottom left
 		0.9f,  0.1f, 0.0f   // bottom right
@@ -144,7 +145,7 @@ int main()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[i]);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 	}
-
+	int OorY = 0;
 	//Uncomment to display vertices in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -158,17 +159,20 @@ int main()
 		//render
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		glUseProgram(shaderProgramOrange);
+		
+		OorY == 0 ? glUseProgram(shaderProgramOrange) : glUseProgram(shaderProgramYellow);
+		OorY = OorY == 0 ? 1 : 0;
 		for (i = 0; i < 4; i++) {
 			glBindVertexArray(VAOs[i]);
 			//glDrawArrays(GL_TRIANGLES, 0, 6);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			
 		}
 
 		//glfw: swap buffers and obtain all IO events
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		Sleep(500);
 	}
 
 	//Clean Up
