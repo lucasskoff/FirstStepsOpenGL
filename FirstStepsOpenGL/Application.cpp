@@ -63,7 +63,7 @@ int main()
 	//Shader
 	//---------------------------------------------------------------------------
 	//Use our shader program with the filenames of the vertex and fragment shaders.
-	//Shader ourShader("vertexShader.vs", "fragmentShader.fs");
+	Shader ourShader("vertexShader.vs", "fragmentShader.fs");
 
 	//First Shader Program
 	int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -162,7 +162,7 @@ int main()
 
 		for (i = 0; i < 4; i++) {
 			if (OorY == i) {
-				glUseProgram(shaderProgramYellow);
+				ourShader.use();
 			}
 			else {
 				glUseProgram(shaderProgramOrange);
