@@ -46,6 +46,12 @@
     <None Include="fragmentShader.fs">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="orangeFragmentShader.fs">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="basicVertexShader.vs">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\Pictures\container.jpg">

@@ -151,7 +151,9 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="basicVertexShader.vs" />
     <None Include="fragmentShader.fs" />
+    <None Include="orangeFragmentShader.fs" />
     <None Include="vertexShader.vs" />
   </ItemGroup>
   <ItemGroup>

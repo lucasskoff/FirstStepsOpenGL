@@ -8,25 +8,6 @@
 #include <iostream>
 #include <windows.h>
 
-const char *vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-const char *fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}\n\0";
-const char *fragmentShaderRightSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(1.0f, 1.0f, 0.2f, 1.0f);\n"
-"}\n\0";
-
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
@@ -63,38 +44,8 @@ int main()
 	//Shader
 	//---------------------------------------------------------------------------
 	//Use our shader program with the filenames of the vertex and fragment shaders.
-	Shader ourShader("vertexShader.vs", "fragmentShader.fs");
-
-	//First Shader Program
-	int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	int fragmentShaderOrange = glCreateShader(GL_FRAGMENT_SHADER);
-	int fragmentShaderYellow = glCreateShader(GL_FRAGMENT_SHADER);
-	int shaderProgramOrange = glCreateProgram();
-	int shaderProgramYellow = glCreateProgram();
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-
-	//Attach shader to the corresponding program.
-	glShaderSource(fragmentShaderOrange, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShaderOrange);
-
-	glShaderSource(fragmentShaderYellow, 1, &fragmentShaderRightSource, NULL);
-	glCompileShader(fragmentShaderYellow);
-	
-	//Attach fragment and vertex shaders to the shader program.
-	glAttachShader(shaderProgramOrange, vertexShader);
-	glAttachShader(shaderProgramOrange, fragmentShaderOrange);
-	glLinkProgram(shaderProgramOrange);
-
-	glAttachShader(shaderProgramYellow, vertexShader);
-	glAttachShader(shaderProgramYellow, fragmentShaderYellow);
-	glLinkProgram(shaderProgramYellow);
-
-	//Remove vertex and fragment shaders as they are no longer necessary.
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShaderOrange);
-	glDeleteShader(fragmentShaderYellow);
-
+	Shader rainbowShader("vertexShader.vs", "fragmentShader.fs");
+	Shader orangeShader("basicVertexShader.vs", "orangeFragmentShader.fs");
 
 	//Vertex Data / Vertex Attributes
 	//---------------------------------------------------------------------------
@@ -126,24 +77,10 @@ int main()
 	};
 
 	unsigned int indices[] = {  // note that we start from 0!
-    0, 1, 3,   // first triangle
-    1, 2, 3    // second triangle
-	};  
-	/*unsigned int VBOs[4], VAOs[4], EBOs[4];
-	glGenVertexArrays(4, VAOs);
-	glGenBuffers(4, VBOs);
-	glGenBuffers(4, EBOs);
+		0, 1, 3,   // first triangle
+		1, 2, 3    // second triangle
+	};
 
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]), vertices[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	*/
 	unsigned int VBOs[4], VAOs[4], EBOs[4];
 	glGenVertexArrays(4, VAOs);
 	glGenBuffers(4, VBOs);
@@ -161,10 +98,11 @@ int main()
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[i]);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 	}
-	int OorY = 0;
+
 	//Uncomment to display vertices in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+	int OorY = 0;
 	//Render Loop
 	//---------------------------------------------------------------------------
 	while (!glfwWindowShouldClose(window))
@@ -177,23 +115,16 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		for (i = 0; i < 4; i++) {
-			ourShader.use();
-			glBindVertexArray(VAOs[i]);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		}
-		/*for (i = 0; i < 4; i++) {
 			if (OorY == i) {
-				ourShader.use();
+				rainbowShader.use();
 			}
 			else {
-				glUseProgram(shaderProgramOrange);
+				orangeShader.use();
 			}
 			glBindVertexArray(VAOs[i]);
-			//glDrawArrays(GL_TRIANGLES, 0, 6);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}
 		OorY = (OorY + 1) % 4;
-		*/
 
 		//glfw: swap buffers and obtain all IO events
 		glfwSwapBuffers(window);
