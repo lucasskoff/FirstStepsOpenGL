@@ -57,5 +57,6 @@
     <Image Include="..\..\..\..\..\Pictures\container.jpg">
       <Filter>resources\texture</Filter>
     </Image>
+    <Image Include="..\..\..\..\..\Downloads\IMG_0575.gif" />
   </ItemGroup>
 </Project>

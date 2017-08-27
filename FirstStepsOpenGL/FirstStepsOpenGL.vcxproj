@@ -157,6 +157,7 @@
     <None Include="vertexShader.vs" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\..\Downloads\IMG_0575.gif" />
     <Image Include="..\..\..\..\..\Pictures\container.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
