@@ -51,28 +51,28 @@ int main()
 	//---------------------------------------------------------------------------
 	float vertices[4][24] = 
 	{ //Top Left Square	   //Colors
-	 { -0.1f,  0.9f, 0.0f, 1.0f, 0.0f, 0.0f,  // top right
-	   -0.9f,  0.9f, 0.0f, 0.0f, 1.0f, 0.0f,  // top left
-	   -0.9f,  0.1f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom left
-	   -0.1f,  0.1f, 0.0f, 0.5f, 0.5f, 0.5f	  // bottom right
+	 { -0.1f,  0.9f, 0.0f, 1.0f, 0.0f, 0.0f,  // top right     - red
+	   -0.9f,  0.9f, 0.0f, 0.0f, 1.0f, 0.0f,  // top left      - green
+	   -0.9f,  0.1f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom left   - blue
+	   -0.1f,  0.1f, 0.0f, 0.5f, 0.5f, 0.5f	  // bottom right  - gray
 	 },
 		//Top Right Square
-	 {  0.9f,  0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  // top right
-		0.1f,  0.9f, 0.0f,  0.0f, 1.0f, 0.0f,  // top left
-		0.1f,  0.1f, 0.0f,  0.0f, 0.0f, 1.0f,  // bottom left
-		0.9f,  0.1f, 0.0f,  0.5f, 0.5f, 0.5f   // bottom right
+	 {  0.9f,  0.9f, 0.0f,  0.0f, 1.0f, 0.0f,  // top right    - green
+		0.1f,  0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  // top left     - red
+		0.1f,  0.1f, 0.0f,  0.5f, 0.5f, 0.5f,  // bottom left  - gray
+		0.9f,  0.1f, 0.0f,  0.0f, 0.0f, 1.0f   // bottom right - blue
 	 },
 		//Bottom Right Square
-	 {  0.9f, -0.1f, 0.0f,  1.0f, 0.0f, 0.0f,  // top right
-		0.1f, -0.1f, 0.0f,  0.0f, 1.0f, 0.0f,  // top left
-		0.1f, -0.9f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom left
-		0.9f, -0.9f, 0.0f,   0.5f, 0.5f, 0.5f   // bottom right
+	 {  0.9f, -0.1f, 0.0f,  0.0f, 0.0f, 1.0f,  // top right    - blue
+		0.1f, -0.1f, 0.0f,  0.5f, 0.5f, 0.5f,  // top left	   - gray
+		0.1f, -0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom left  - red
+		0.9f, -0.9f, 0.0f,  0.0f, 1.0f, 0.0f   // bottom right - green
 	 },
 		//Bottom Left Square
-	 {  -0.1f, -0.1f, 0.0f,  1.0f, 0.0f, 0.0f,  // top right
-		-0.9f, -0.1f, 0.0f,  0.0f, 1.0f, 0.0f,  // top left
-		-0.9f, -0.9f, 0.0f,  0.0f, 0.0f, 1.0f,  // bottom left
-		-0.1f, -0.9f, 0.0f,  0.5f, 0.5f, 0.5f   // bottom right
+	 {  -0.1f, -0.1f, 0.0f,  0.5f, 0.5f, 0.5f, // top right    - gray
+		-0.9f, -0.1f, 0.0f,  0.0f, 0.0f, 1.0f, // top left     - blue
+		-0.9f, -0.9f, 0.0f,  0.0f, 1.0f, 0.0f, // bottom left  - green
+		-0.1f, -0.9f, 0.0f,  1.0f, 0.0f, 0.0f  // bottom right - red
 	 }
 	};
 
@@ -115,12 +115,13 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		for (i = 0; i < 4; i++) {
-			if (OorY == i) {
+			/*if (OorY == i) {
 				rainbowShader.use();
 			}
 			else {
 				orangeShader.use();
-			}
+			}*/
+			rainbowShader.use();
 			glBindVertexArray(VAOs[i]);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}
@@ -129,7 +130,7 @@ int main()
 		//glfw: swap buffers and obtain all IO events
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		Sleep(500);
+		Sleep(100);
 	}
 
 	//Clean Up
