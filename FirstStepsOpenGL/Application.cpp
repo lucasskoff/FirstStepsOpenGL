@@ -10,7 +10,7 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
-
+const int NUMBER_OF_SQUARES = 4;
 int main()
 {
 	//GLFW
@@ -49,27 +49,27 @@ int main()
 
 	//Vertex Data / Vertex Attributes
 	//---------------------------------------------------------------------------
-	float vertices[4][24] = 
+	float vertices[NUMBER_OF_SQUARES][24] =
 	{ //Top Left Square	   //Colors
 	 { -0.1f,  0.9f, 0.0f, 1.0f, 0.0f, 0.0f,  // top right     - red
 	   -0.9f,  0.9f, 0.0f, 0.0f, 1.0f, 0.0f,  // top left      - green
 	   -0.9f,  0.1f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom left   - blue
-	   -0.1f,  0.1f, 0.0f, 0.5f, 0.5f, 0.5f	  // bottom right  - gray
+	   -0.1f,  0.1f, 0.0f, 1.0f, 1.0f, 1.0f	  // bottom right  - white
 	 },
 		//Top Right Square
 	 {  0.9f,  0.9f, 0.0f,  0.0f, 1.0f, 0.0f,  // top right    - green
 		0.1f,  0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  // top left     - red
-		0.1f,  0.1f, 0.0f,  0.5f, 0.5f, 0.5f,  // bottom left  - gray
+		0.1f,  0.1f, 0.0f,  1.0f, 1.0f, 1.0f,  // bottom left  - white
 		0.9f,  0.1f, 0.0f,  0.0f, 0.0f, 1.0f   // bottom right - blue
 	 },
 		//Bottom Right Square
 	 {  0.9f, -0.1f, 0.0f,  0.0f, 0.0f, 1.0f,  // top right    - blue
-		0.1f, -0.1f, 0.0f,  0.5f, 0.5f, 0.5f,  // top left	   - gray
+		0.1f, -0.1f, 0.0f,  1.0f, 1.0f, 1.0f,  // top left	   - white
 		0.1f, -0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom left  - red
 		0.9f, -0.9f, 0.0f,  0.0f, 1.0f, 0.0f   // bottom right - green
 	 },
 		//Bottom Left Square
-	 {  -0.1f, -0.1f, 0.0f,  0.5f, 0.5f, 0.5f, // top right    - gray
+	 {  -0.1f, -0.1f, 0.0f,  1.0f, 1.0f, 1.0f, // top right    - white
 		-0.9f, -0.1f, 0.0f,  0.0f, 0.0f, 1.0f, // top left     - blue
 		-0.9f, -0.9f, 0.0f,  0.0f, 1.0f, 0.0f, // bottom left  - green
 		-0.1f, -0.9f, 0.0f,  1.0f, 0.0f, 0.0f  // bottom right - red
@@ -81,13 +81,18 @@ int main()
 		1, 2, 3    // second triangle
 	};
 
-	unsigned int VBOs[4], VAOs[4], EBOs[4];
-	glGenVertexArrays(4, VAOs);
-	glGenBuffers(4, VBOs);
-	glGenBuffers(4, EBOs);
+	unsigned int indices2[] = {
+		0, 1, 2,
+		0, 3, 2
+	};
+
+	unsigned int VBOs[NUMBER_OF_SQUARES], VAOs[NUMBER_OF_SQUARES], EBOs[NUMBER_OF_SQUARES];
+	glGenVertexArrays(NUMBER_OF_SQUARES, VAOs);
+	glGenBuffers(NUMBER_OF_SQUARES, VBOs);
+	glGenBuffers(NUMBER_OF_SQUARES, EBOs);
 
 	int i = 0;
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < NUMBER_OF_SQUARES; i++) {
 		glBindVertexArray(VAOs[i]);
 		glBindBuffer(GL_ARRAY_BUFFER, VBOs[i]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[i]), vertices[i], GL_STATIC_DRAW);
@@ -96,7 +101,13 @@ int main()
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[i]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		if (i % 2 == 0) { //fixes fragmentation issue related to indices
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+		}
+		else
+		{
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices2), indices2, GL_STATIC_DRAW);
+		}
 	}
 
 	//Uncomment to display vertices in wireframe
@@ -115,13 +126,14 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		for (i = 0; i < 4; i++) {
-			/*if (OorY == i) {
+			if (OorY == i) {
 				rainbowShader.use();
 			}
 			else {
 				orangeShader.use();
-			}*/
-			rainbowShader.use();
+			}
+			//rainbowShader.use();
+			//rainbowShader.setFloat("someUniform", 1.0f);
 			glBindVertexArray(VAOs[i]);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}
@@ -130,7 +142,7 @@ int main()
 		//glfw: swap buffers and obtain all IO events
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		Sleep(100);
+		Sleep(500);
 	}
 
 	//Clean Up
