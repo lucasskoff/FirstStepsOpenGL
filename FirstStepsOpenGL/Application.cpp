@@ -44,17 +44,19 @@ int main()
 	//Shader
 	//---------------------------------------------------------------------------
 	//Use our shader program with the filenames of the vertex and fragment shaders.
-	Shader rainbowShader("vertexShader.vs", "fragmentShader.fs");
-	Shader orangeShader("basicVertexShader.vs", "orangeFragmentShader.fs");
+	//Shader rainbowShader("vertexShader.vs", "fragmentShader.fs");
+	//Shader orangeShader("basicVertexShader.vs", "orangeFragmentShader.fs");
+	Shader fragmentShader("basicVertexShader.vs", "textureFragment.fs");
 
 	//Vertex Data / Vertex Attributes
 	//---------------------------------------------------------------------------
-	float vertices[NUMBER_OF_SQUARES][24] =
-	{ //Top Left Square	   //Colors
-	 { -0.1f,  0.9f, 0.0f, 1.0f, 0.0f, 0.0f,  // top right     - red
-	   -0.9f,  0.9f, 0.0f, 0.0f, 1.0f, 0.0f,  // top left      - green
-	   -0.9f,  0.1f, 0.0f, 0.0f, 0.0f, 1.0f,  // bottom left   - blue
-	   -0.1f,  0.1f, 0.0f, 1.0f, 1.0f, 1.0f	  // bottom right  - white
+	
+	float vertices[NUMBER_OF_SQUARES][128] =
+	{ //Top Left Square	   //Colors			 //Textures  
+	 { -0.1f,  0.9f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right     - red
+	   -0.9f,  0.9f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // top left      - green
+	   -0.9f,  0.1f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left   - blue
+	   -0.1f,  0.1f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f  // bottom right  - white
 	 },
 		//Top Right Square
 	 {  0.9f,  0.9f, 0.0f,  0.0f, 1.0f, 0.0f,  // top right    - green
@@ -85,7 +87,27 @@ int main()
 		0, 1, 2,
 		0, 3, 2
 	};
+	unsigned int VBO, VAO, EBO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]), vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	//vertex
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	//color
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	//texture
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+	/*
 	unsigned int VBOs[NUMBER_OF_SQUARES], VAOs[NUMBER_OF_SQUARES], EBOs[NUMBER_OF_SQUARES];
 	glGenVertexArrays(NUMBER_OF_SQUARES, VAOs);
 	glGenBuffers(NUMBER_OF_SQUARES, VBOs);
@@ -109,6 +131,32 @@ int main()
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices2), indices2, GL_STATIC_DRAW);
 		}
 	}
+	*/
+	//Texture
+	//---------------------------------------------------------------------------
+	//generate and bind the texture pointer
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	//set the shape and repeating pattern for the texture
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	int width, height, nrChannels;
+	//use stb_image.h to load the designated image as a texture
+	unsigned char *data = stbi_load(".\\resources\\texture\\container.jpg", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
 
 	//Uncomment to display vertices in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -120,12 +168,12 @@ int main()
 	{
 		// input
 		processInput(window);
-
-		//render
+		//start each frame by clearing
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		for (i = 0; i < 4; i++) {
+		//render multiple squares
+		/*for (i = 0; i < 4; i++) {
 			if (OorY == i) {
 				rainbowShader.use();
 			}
@@ -138,19 +186,33 @@ int main()
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}
 		OorY = (OorY + 1) % 4;
+		*/
+
+		// bind Texture
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		// render container
+		fragmentShader.use();
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		//glfw: swap buffers and obtain all IO events
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		Sleep(500);
+		//Sleep(500);
 	}
 
 	//Clean Up
 	//---------------------------------------------------------------------------
 	//glfw terminate to clear all allocated glfw resources.
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+	/*
 	glDeleteVertexArrays(1, VAOs);
 	glDeleteBuffers(1, VBOs);
 	glDeleteBuffers(1, EBOs);
+	*/
 	glfwTerminate();
 	return 0;
 }

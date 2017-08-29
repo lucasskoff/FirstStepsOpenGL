@@ -29,7 +29,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Tutorials Followed.txt" />
-    <Text Include="notepad.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shaderProgram.h">
@@ -52,11 +51,14 @@
     <None Include="basicVertexShader.vs">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="textureFragment.fs">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\Pictures\container.jpg">
       <Filter>resources\texture</Filter>
     </Image>
-    <Image Include="..\..\..\..\..\Downloads\IMG_0575.gif" />
+    <Image Include="..\..\..\..\..\Downloads\Rainbow Circulation Example for 901a0a1.gif" />
   </ItemGroup>
 </Project>

@@ -143,7 +143,6 @@
     <ClCompile Include="stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="notepad.txt" />
     <Text Include="Tutorials Followed.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -154,10 +153,11 @@
     <None Include="basicVertexShader.vs" />
     <None Include="fragmentShader.fs" />
     <None Include="orangeFragmentShader.fs" />
+    <None Include="textureFragment.fs" />
     <None Include="vertexShader.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\..\Downloads\IMG_0575.gif" />
+    <Image Include="..\..\..\..\..\Downloads\Rainbow Circulation Example for 901a0a1.gif" />
     <Image Include="..\..\..\..\..\Pictures\container.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
