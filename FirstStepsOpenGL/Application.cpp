@@ -52,29 +52,29 @@ int main()
 	//---------------------------------------------------------------------------
 	
 	float vertices[NUMBER_OF_SQUARES][128] =
-	{ //Top Left Square	   //Colors			 //Textures  
-	 { -0.1f,  0.9f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right     - red
-	   -0.9f,  0.9f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // top left      - green
-	   -0.9f,  0.1f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left   - blue
-	   -0.1f,  0.1f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f  // bottom right  - white
+	{ //Top Left Square	    //Colors		   //Textures  
+	 { -0.1f,  0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,  // top right     - red
+	   -0.9f,  0.9f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,  // top left      - green
+	   -0.9f,  0.1f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,  // bottom left   - blue
+	   -0.1f,  0.1f, 0.0f,  1.0f, 1.0f, 1.0f,  0.0f, 1.0f   // bottom right  - white
 	 },
 		//Top Right Square
-	 {  0.9f,  0.9f, 0.0f,  0.0f, 1.0f, 0.0f,  // top right    - green
-		0.1f,  0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  // top left     - red
-		0.1f,  0.1f, 0.0f,  1.0f, 1.0f, 1.0f,  // bottom left  - white
-		0.9f,  0.1f, 0.0f,  0.0f, 0.0f, 1.0f   // bottom right - blue
+	 {  0.9f,  0.9f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,  // top right    - green
+		0.1f,  0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,  // top left     - red
+		0.1f,  0.1f, 0.0f,  1.0f, 1.0f, 1.0f,  0.0f, 0.0f,  // bottom left  - white
+		0.9f,  0.1f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f   // bottom right - blue
 	 },
 		//Bottom Right Square
-	 {  0.9f, -0.1f, 0.0f,  0.0f, 0.0f, 1.0f,  // top right    - blue
-		0.1f, -0.1f, 0.0f,  1.0f, 1.0f, 1.0f,  // top left	   - white
-		0.1f, -0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom left  - red
-		0.9f, -0.9f, 0.0f,  0.0f, 1.0f, 0.0f   // bottom right - green
+	 {  0.9f, -0.1f, 0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,  // top right    - blue
+		0.1f, -0.1f, 0.0f,  1.0f, 1.0f, 1.0f,  1.0f, 0.0f,  // top left	    - white
+		0.1f, -0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,  // bottom left  - red
+		0.9f, -0.9f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f   // bottom right - green
 	 },
 		//Bottom Left Square
-	 {  -0.1f, -0.1f, 0.0f,  1.0f, 1.0f, 1.0f, // top right    - white
-		-0.9f, -0.1f, 0.0f,  0.0f, 0.0f, 1.0f, // top left     - blue
-		-0.9f, -0.9f, 0.0f,  0.0f, 1.0f, 0.0f, // bottom left  - green
-		-0.1f, -0.9f, 0.0f,  1.0f, 0.0f, 0.0f  // bottom right - red
+	 {  -0.1f, -0.1f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  // top right    - white
+		-0.9f, -0.1f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,  // top left     - blue
+		-0.9f, -0.9f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,  // bottom left  - green
+		-0.1f, -0.9f, 0.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f   // bottom right - red
 	 }
 	};
 
@@ -87,27 +87,8 @@ int main()
 		0, 1, 2,
 		0, 3, 2
 	};
-	unsigned int VBO, VAO, EBO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
 
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]), vertices[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	//vertex
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	//color
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	//texture
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
 
-	/*
 	unsigned int VBOs[NUMBER_OF_SQUARES], VAOs[NUMBER_OF_SQUARES], EBOs[NUMBER_OF_SQUARES];
 	glGenVertexArrays(NUMBER_OF_SQUARES, VAOs);
 	glGenBuffers(NUMBER_OF_SQUARES, VBOs);
@@ -118,10 +99,7 @@ int main()
 		glBindVertexArray(VAOs[i]);
 		glBindBuffer(GL_ARRAY_BUFFER, VBOs[i]);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[i]), vertices[i], GL_STATIC_DRAW);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
+		//Bind multiple polygons into a shape
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[i]);
 		if (i % 2 == 0) { //fixes fragmentation issue related to indices
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -130,8 +108,16 @@ int main()
 		{
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices2), indices2, GL_STATIC_DRAW);
 		}
-	}
-	*/
+		//Position
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		//Color
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		//Texture
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glEnableVertexAttribArray(2);
+	} 
 	//Texture
 	//---------------------------------------------------------------------------
 	//generate and bind the texture pointer
@@ -172,29 +158,15 @@ int main()
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		// bind Texture
+		glBindTexture(GL_TEXTURE_2D, texture);
 		//render multiple squares
-		/*for (i = 0; i < 4; i++) {
-			if (OorY == i) {
-				rainbowShader.use();
-			}
-			else {
-				orangeShader.use();
-			}
-			//rainbowShader.use();
-			//rainbowShader.setFloat("someUniform", 1.0f);
+		for (i = 0; i < NUMBER_OF_SQUARES; i++) {
+			fragmentShader.use();
 			glBindVertexArray(VAOs[i]);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}
 		OorY = (OorY + 1) % 4;
-		*/
-
-		// bind Texture
-		glBindTexture(GL_TEXTURE_2D, texture);
-
-		// render container
-		fragmentShader.use();
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		//glfw: swap buffers and obtain all IO events
 		glfwSwapBuffers(window);
@@ -205,14 +177,9 @@ int main()
 	//Clean Up
 	//---------------------------------------------------------------------------
 	//glfw terminate to clear all allocated glfw resources.
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
-	/*
 	glDeleteVertexArrays(1, VAOs);
 	glDeleteBuffers(1, VBOs);
 	glDeleteBuffers(1, EBOs);
-	*/
 	glfwTerminate();
 	return 0;
 }
