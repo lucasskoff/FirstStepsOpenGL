@@ -54,6 +54,9 @@
     <None Include="textureFragment.fs">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="rainbowTextureFragment.fs">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\Pictures\container.jpg">

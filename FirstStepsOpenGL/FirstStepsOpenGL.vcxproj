@@ -153,6 +153,7 @@
     <None Include="basicVertexShader.vs" />
     <None Include="fragmentShader.fs" />
     <None Include="orangeFragmentShader.fs" />
+    <None Include="rainbowTextureFragment.fs" />
     <None Include="textureFragment.fs" />
     <None Include="vertexShader.vs" />
   </ItemGroup>
