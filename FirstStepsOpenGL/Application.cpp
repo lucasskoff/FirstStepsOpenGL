@@ -44,93 +44,63 @@ int main()
 	//Shader
 	//---------------------------------------------------------------------------
 	//Use our shader program with the filenames of the vertex and fragment shaders.
-	//Shader rainbowShader("vertexShader.vs", "fragmentShader.fs");
-	//Shader orangeShader("basicVertexShader.vs", "orangeFragmentShader.fs");
-	Shader fragmentShader("basicVertexShader.vs", "textureFragment.fs");
+	Shader ourShader("basicVertexShader.vs", "textureFragment.fs");
 
 	//Vertex Data / Vertex Attributes
 	//---------------------------------------------------------------------------
 	
-	float vertices[NUMBER_OF_SQUARES][128] =
-	{ //Top Left Square	    //Colors		   //Textures  
-	 { -0.1f,  0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,  // top right     - red
-	   -0.9f,  0.9f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,  // top left      - green
-	   -0.9f,  0.1f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,  // bottom left   - blue
-	   -0.1f,  0.1f, 0.0f,  1.0f, 1.0f, 1.0f,  0.0f, 1.0f   // bottom right  - white
-	 },
-		//Top Right Square
-	 {  0.9f,  0.9f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,  // top right    - green
-		0.1f,  0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,  // top left     - red
-		0.1f,  0.1f, 0.0f,  1.0f, 1.0f, 1.0f,  0.0f, 0.0f,  // bottom left  - white
-		0.9f,  0.1f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f   // bottom right - blue
-	 },
-		//Bottom Right Square
-	 {  0.9f, -0.1f, 0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,  // top right    - blue
-		0.1f, -0.1f, 0.0f,  1.0f, 1.0f, 1.0f,  1.0f, 0.0f,  // top left	    - white
-		0.1f, -0.9f, 0.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,  // bottom left  - red
-		0.9f, -0.9f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f   // bottom right - green
-	 },
-		//Bottom Left Square
-	 {  -0.1f, -0.1f, 0.0f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f,  // top right    - white
-		-0.9f, -0.1f, 0.0f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,  // top left     - blue
-		-0.9f, -0.9f, 0.0f,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,  // bottom left  - green
-		-0.1f, -0.9f, 0.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f   // bottom right - red
-	 }
+	float vertices[] = {
+		// positions          //Colors           //Texture
+		0.5f,  0.5f, 0.0f,    1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
+		0.5f, -0.5f, 0.0f,    0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
+	   -0.5f, -0.5f, 0.0f,    0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+	   -0.5f,  0.5f, 0.0f,    1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
 	};
 
-	unsigned int indices[] = {  // note that we start from 0!
+	unsigned int indices[] = {
 		0, 1, 3,   // first triangle
 		1, 2, 3    // second triangle
 	};
 
-	unsigned int indices2[] = {
-		0, 1, 2,
-		0, 3, 2
-	};
 
+	unsigned int VBO, VAO, EBO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 
-	unsigned int VBOs[NUMBER_OF_SQUARES], VAOs[NUMBER_OF_SQUARES], EBOs[NUMBER_OF_SQUARES];
-	glGenVertexArrays(NUMBER_OF_SQUARES, VAOs);
-	glGenBuffers(NUMBER_OF_SQUARES, VBOs);
-	glGenBuffers(NUMBER_OF_SQUARES, EBOs);
+	glBindVertexArray(VAO);
 
-	int i = 0;
-	for (int i = 0; i < NUMBER_OF_SQUARES; i++) {
-		glBindVertexArray(VAOs[i]);
-		glBindBuffer(GL_ARRAY_BUFFER, VBOs[i]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[i]), vertices[i], GL_STATIC_DRAW);
-		//Bind multiple polygons into a shape
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBOs[i]);
-		if (i % 2 == 0) { //fixes fragmentation issue related to indices
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-		}
-		else
-		{
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices2), indices2, GL_STATIC_DRAW);
-		}
-		//Position
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-		//Color
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
-		//Texture
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		glEnableVertexAttribArray(2);
-	} 
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	// texture coord attribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
 	//Texture
 	//---------------------------------------------------------------------------
 	//generate and bind the texture pointer
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
+	unsigned int texture1, texture2;
+	glGenTextures(1, &texture1);
+	glBindTexture(GL_TEXTURE_2D, texture1);
 
 	//set the shape and repeating pattern for the texture
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	//texture filtering parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	int width, height, nrChannels;
+	stbi_set_flip_vertically_on_load(true);
 	//use stb_image.h to load the designated image as a texture
 	unsigned char *data = stbi_load(".\\resources\\texture\\container.jpg", &width, &height, &nrChannels, 0);
 	if (data)
@@ -143,11 +113,37 @@ int main()
 		std::cout << "Failed to load texture" << std::endl;
 	}
 	stbi_image_free(data);
+	//Texture 2
+	glGenTextures(1, &texture2);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+	// set the texture wrapping parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// set texture wrapping to GL_REPEAT (default wrapping method)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// set texture filtering parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// load image, create texture and generate mipmaps
+	data = stbi_load(".\\resources\\texture\\awesomeface.jpg", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		// note that the awesomeface.png has transparency and thus an alpha channel, so make sure to tell OpenGL the data type is of GL_RGBA
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << std::endl;
+	}
+	stbi_image_free(data);
 
 	//Uncomment to display vertices in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-	int OorY = 0;
+	//Tell OpenGL which texture unit each sampler belongs to
+	ourShader.use(); //Activate shader before setting uniforms
+	glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0); //set it manually
+	ourShader.setInt("texture2", 1); //set it via the texture class
+
 	//Render Loop
 	//---------------------------------------------------------------------------
 	while (!glfwWindowShouldClose(window))
@@ -158,16 +154,16 @@ int main()
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// bind Texture
-		glBindTexture(GL_TEXTURE_2D, texture);
-		//render multiple squares
-		for (i = 0; i < NUMBER_OF_SQUARES; i++) {
-			fragmentShader.use();
-			glBindVertexArray(VAOs[i]);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		}
-		OorY = (OorY + 1) % 4;
-
+		//bind textures to corresponding texture units
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
+		
+		//render container
+		ourShader.use();
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		//glfw: swap buffers and obtain all IO events
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -177,9 +173,9 @@ int main()
 	//Clean Up
 	//---------------------------------------------------------------------------
 	//glfw terminate to clear all allocated glfw resources.
-	glDeleteVertexArrays(1, VAOs);
-	glDeleteBuffers(1, VBOs);
-	glDeleteBuffers(1, EBOs);
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 	glfwTerminate();
 	return 0;
 }
